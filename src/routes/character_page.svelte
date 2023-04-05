@@ -1,23 +1,34 @@
 <script lang="ts">
-    import {get_data} from "../lib/messaging/client/database_connect";
+    import {messengers} from "../lib/messaging/client/messengers";
+    import {Status} from "../lib/messaging/status";
     export let username:string = "";
 
     let skills;
     let skillpoints;
-    get_data(username, "SKILLS").then((res)=>{skills=res; console.log(res)});
-    get_data(username, "SKILL_POINTS").then((res)=>{skillpoints=res; console.log(res)});
+    function get_skills() {
+        messengers.data.get(username, ["SKILLS"])
+            .on(Status.OK, (res) => skills = res.message)
+            .on(Status.NOT_FOUND, () => console.log(`Can't find SKILLS in userdata`))
+            .send();
+    }
+    function get_skill_points() {
+        messengers.data.get(username, ["SKILL_POINTS"])
+            .on(Status.OK, (res) => skillpoints = res.message)
+            .on(Status.NOT_FOUND, () => console.log(`Can't find SKILL_POINTS in userdata`))
+            .send();
+    }
+    get_skills();
+    get_skill_points();
+
+    function change_skill (name:string, amount:number) {
+        messengers.data.change_by(username, ["SKILLS", name], amount)
+            .on(Status.OK, ()=> {get_skills();get_skill_points()})
+            .send();
+    }
 
     let hotbar_slot_count: number = 8;
     let hotbar_slots: object[] = [];
     for (let i = 0; i < hotbar_slot_count; i++) hotbar_slots.push({"component": undefined});
-    function change_value(name:string, amount:number) {
-        if (skills[name]+amount >= 0 || amount > 0) {
-            if (skillpoints >= amount) {
-                skills[name] += amount;
-                skillpoints -= amount;
-            } else alert("You have not enough skillpoints left!");
-        } else alert("You can't make any of your traits lower than zero!");
-    }
 
 </script>
 
@@ -47,11 +58,11 @@
             {#each Object.keys(skills) as skill}
                 <h3>{skill}</h3>
                 <div class = "valueSetter">
-                    <button class="fancybox" on:click={()=>change_value(skill, -1)}>-</button>
+                    <button class="fancybox" on:click={()=>change_skill(skill, -1)}>-</button>
                     <div id="number">
                         <h3>{skills[skill]}</h3>
                     </div>
-                    <button class="fancybox" on:click={()=>change_value(skill, 1)}>+</button>
+                    <button class="fancybox" on:click={()=>change_skill(skill, 1)}>+</button>
                 </div>
             {/each}
         </div>
@@ -73,6 +84,8 @@
 {/if}
 <style lang="scss">
     @import url("../../src/styles/scrollbar.scss");
+    @import url("../../src/styles/text.scss");
+    @import url("../../src/styles/custombox.scss");
     div#grid {
       text-align: center;
       display: grid;

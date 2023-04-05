@@ -1,17 +1,1 @@
-{
-  "Gab" : {
-    "PASSWORD" : "asd",
-    "SKILLS" : {
-      "Strength" : 0,
-      "Agility" : 0,
-      "Stamina" : 0,
-      "Magic" : 0,
-      "Charisma" : 0,
-      "Vitality" : 0,
-      "Intelligence" : 0,
-      "Perception" : 0,
-      "Animal Handling" : 0
-    },
-    "SKILL_POINTS" : 10
-  }
-}
+{"Gab":{"PASSWORD":"asd","SKILLS":{"Strength":3,"Agility":1,"Stamina":1,"Magic":1,"Charisma":0,"Vitality":0,"Intelligence":0,"Perception":0,"Animal Handling":0},"SKILL_POINTS":4}}

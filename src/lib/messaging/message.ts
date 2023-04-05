@@ -2,5 +2,6 @@
 
 export enum Message {
 	AUTH_LOGIN,
-	GET_DATA
+	GET_DATA,
+	CHANGE_BY
 }

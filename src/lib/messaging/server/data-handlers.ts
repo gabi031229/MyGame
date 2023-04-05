@@ -2,14 +2,21 @@ import { respond, ServerTypes } from "@affinity-lab/sk-messaging";
 import {Message} from "../message";
 import {Status} from "../status";
 import {reform} from "reformdata";
-import userdata from "./userdata.json";
+import fs from "fs";
+
+let path:string = "./userdata.json";
+let userdata: object;
+userdata = JSON.parse(fs.readFileSync(path));
+
+function updateData () {fs.writeFile(path, JSON.stringify(userdata, null, 4), (err)=>{
+    if (err) console.log(err);
+});}
 
 // you need to create a MessageHandlerCollection
 const dataHandlers: ServerTypes.MessageHandlerCollection = {};
 
 // and create handler methods for all your messages
 dataHandlers[Message.GET_DATA] = (event, formdata) => {
-    // the handler method gets the RequestEvent, and FormData as argument
     let data = reform<{username:string, keys:string[]}>(formdata as FormData);
 
     let response = respond(Status.NOT_FOUND);
@@ -26,12 +33,28 @@ dataHandlers[Message.GET_DATA] = (event, formdata) => {
         } else return response;
     }
     response = respond(Status.OK, returnData);
-    // the handler must return a 200 OK JSON ({status:string|number, message:any}) response
-    // the "respond" function can create you one
-
-    //response.headers.set("myheader", "myvalue");
-    //event.cookies.set("mycookie", "myvalue", {path: "/"})
     return response;
+}
+
+dataHandlers[Message.CHANGE_BY] = (event, formdata) => {
+    let data = reform<{username:string, keys:string[], amount:string}>(formdata as FormData);
+
+    let path: string[] = [data.username, ...data.keys];
+    let p: string[] = path.slice(0,-1);
+    let last: string = path.slice(-1);
+    let key: string;
+    let data_copy: object = userdata;
+    while(p.length > 0) {
+        key = p.shift();
+        data_copy = data_copy[key];
+    }
+    data_copy[last] += parseInt(data.amount);
+
+    //userdata[data.username][data.keys[0]][data.keys[1]] += data.amount;
+    userdata[data.username]["SKILL_POINTS"] -= parseInt(data.amount);
+
+    updateData();
+    return respond(Status.OK);
 }
 
 export default dataHandlers;
