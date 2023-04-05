@@ -11,6 +11,9 @@
         "Animal Handling" : 0
     }
     let skillpoints:number = 10;
+    let hotbar_slot_count: number = 8;
+    let hotbar_slots: object[] = [];
+    for (let i = 0; i < hotbar_slot_count; i++) hotbar_slots.push({"component": undefined});
     function change_value(name:string, amount:number) {
         if (skills[name]+amount >= 0 || amount > 0) {
             if (skillpoints >= amount) {
@@ -25,37 +28,38 @@
     <div id = "imgContainer">
         <div id = "img"></div>
     </div>
-    <div id = "armor">
+    <div id = "armor" class="fancybox">
         <h1>Armor</h1>
         <div id = "armorGrid">
-            <div class = "armorSlot"></div><h3>Helmet</h3>
-            <div class = "armorSlot"></div><h3>Chestplate</h3>
-            <div class = "armorSlot"></div><h3>Leggings</h3>
-            <div class = "armorSlot"></div><h3>Boots</h3>
+            <div class = "armorSlot fancybox"></div><h3>Helmet</h3>
+            <div class = "armorSlot fancybox"></div><h3>Chestplate</h3>
+            <div class = "armorSlot fancybox"></div><h3>Leggings</h3>
+            <div class = "armorSlot fancybox"></div><h3>Boots</h3>
         </div>
     </div>
-    <div id="hotbar">
+    <div class="fancybox" id="hotbar">
         <h1>Hotbar</h1>
-        <div class = "slot"></div><div class = "slot"></div><div class = "slot"></div><div class = "slot"></div>
-        <div class = "slot"></div><div class = "slot"></div><div class = "slot"></div><div class = "slot"></div>
+        {#each hotbar_slots as slot,index}
+            <div class="fancybox slot" bind:this={hotbar_slots[index]["component"]}></div>
+        {/each}
     </div>
-    <div id="skills">
+    <div id="skills" class="fancybox">
         <h1>Skills (+{skillpoints})</h1>
         <div id = "skillrows">
             {#each Object.keys(skills) as skill}
                 <h3>{skill}</h3>
                 <div class = "valueSetter">
-                    <button on:click={()=>change_value(skill, -1)}>-</button>
+                    <button class="fancybox" on:click={()=>change_value(skill, -1)}>-</button>
                     <div id="number">
-                        <h2>{skills[skill]}</h2>
+                        <h3>{skills[skill]}</h3>
                     </div>
-                    <button on:click={()=>change_value(skill, 1)}>+</button>
+                    <button class="fancybox" on:click={()=>change_value(skill, 1)}>+</button>
                 </div>
             {/each}
         </div>
     </div>
     <div id="lore">
-        <article>
+        <article class="smallred">
             Deep within the heart of the enchanted forest, there lives a fierce and captivating maiden with flowing locks of crimson red, cascading down her back like a blazing fire. Her eyes, the color of the richest ruby, glimmer with an otherworldly intensity, reflecting the secrets of the universe.
             <br>
             She is a woman of great power, with a stare that can penetrate the soul of any man or beast. With a flick of her wrist, she can command the elements to do her bidding, summoning the wind and rain to unleash her fury upon her enemies.
@@ -70,7 +74,7 @@
 </div>
 
 <style lang="scss">
-    @import url("styles/scrollbar.scss");
+    @import url("../../src/styles/scrollbar.scss");
     div#grid {
       text-align: center;
       display: grid;
@@ -83,15 +87,12 @@
       align-content: stretch;
       width: 100%;
       height: 100%;
-      h1 {
-        font-variant: small-caps;
-        font-weight: bolder;
-      }
+
       div#imgContainer {
         grid-area: img;
         padding: 10px;
         div#img {
-          background-image: url("face.PNG");
+          background-image: url("src/imgs/face.PNG");
           background-position: center;
           background-size: cover;
           background-repeat: no-repeat;
@@ -103,8 +104,6 @@
       div#hotbar {
         grid-area: hotbar;
         margin: 10px;
-        border: 2px solid black;
-        box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
         overflow-y: auto;
         overflow-x: hidden;
         min-width: 120px;
@@ -112,8 +111,6 @@
           display: inline-block;
           width: 80px;
           height: 80px;
-          border: 2px solid black;
-          box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
           justify-self: center;
           align-self: center;
           margin: 10px;
@@ -122,8 +119,6 @@
       div#armor {
         grid-area: armor;
         margin: 10px;
-        border: 2px solid black;
-        box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
         padding: 10px;
         overflow-y: auto;
         min-width: 250px;
@@ -133,23 +128,16 @@
           div.armorSlot {
             width: 80px;
             height: 80px;
-            border: 2px solid black;
-            box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
             justify-self: center;
             align-self: center;
             margin: 10px;
           }
-          h3 {
-            font-size: 30px;
-            font-weight: bolder;
-          }
+
         }
       }
       div#skills {
         grid-area: skills;
         margin: 10px;
-        border: 2px solid black;
-        box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
         * { margin: auto auto;}
         min-width: 400px;
         div#skillrows {
@@ -160,37 +148,19 @@
           h2, div#number, button {display: inline-block;}
           div#number {width: 60px;}
           button {
-            border: 2px solid black;
-            box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
             background: none;
             font-size: 30px;
             font-weight: bolder;
             height: 100%;
-          }
-          h3 {
-            font-size: 30px;
-            font-weight: bolder;
-          }
-          h1 {
-            display: block;
-            height: 15%;
           }
         }
       }
       div#lore {
         grid-area: lore;
         margin: 10px;
-        border: 2px solid black;
-        box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
         overflow: auto;
         padding: 20px;
         text-align: justify;
-        color: rgb(150,0,0);
-        article{
-          font-size: 20px;
-          font-weight: bolder;
-          font-style: italic;
-        }
       }
     }
 </style>

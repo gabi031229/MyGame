@@ -17,6 +17,7 @@
         "Leaderboard"
     ]
 </script>
+<div id="backg"></div>
 <div id="grid">
     <header>
         <h1>Allies of the Forgotten Shadowfell</h1>
@@ -24,12 +25,12 @@
     </header>
     <nav>
         {#each pages as page}
-            <button on:click={()=>{active_page=page;console.log(active_page)}}>{page}</button>
+            <button class="fancybox" on:click={()=>{active_page=page;console.log(active_page)}}>{page}</button>
         {/each}
     </nav>
 
     <main>
-        <div id="gamearea">
+        <div id="gamearea" class="fancybox" >
             {#if active_page === "Character"}
                 <CharacterPage/>
             {:else if active_page === "Map"}
@@ -44,7 +45,9 @@
     </footer>
 </div>
 <style lang="scss">
-    @import url("styles/scrollbar.scss");
+    @import url("../../src/styles/scrollbar.scss");
+    @import url("../../src/styles/custombox.scss");
+    @import url("../../src/styles/text.scss");
     div#grid {
         overflow: auto;
         display: grid;
@@ -56,23 +59,16 @@
             "foot foot";
         grid-template-columns: 300px 1fr;
         grid-template-rows: 10% 85% 5%;
-        background-image: url("backg.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
         nav {
           grid-area: nav;
           display: grid;
           grid-template-columns: 100%;
           overflow: auto;
           button {
-            background: none;
             font-size: 25px;
             font-variant: small-caps;
             margin: 15px;
             font-weight: bolder;
-            border: 2px solid black;
-            box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
           }
           button:hover {
             box-shadow: 0 0 8px 8px rgba(0,0,0,.5);
@@ -105,10 +101,8 @@
           grid-area: main;
           padding: 20px;
           div#gamearea {
-            border: 2px solid black;
             width: 100%;
             height: 100%;
-            box-shadow: 0 0 5px 5px rgba(0,0,0,.5);
           }
         }
         footer {

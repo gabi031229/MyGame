@@ -7,7 +7,7 @@
 </div>
 
 <style lang="scss">
-    @import url("styles/scrollbar.scss");
+    @import url("../../src/styles/scrollbar.scss");
     div#all {
       width: 100%;
       height: 100%;
