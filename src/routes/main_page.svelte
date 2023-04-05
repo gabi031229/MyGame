@@ -32,7 +32,7 @@
     <main>
         <div id="gamearea" class="fancybox" >
             {#if active_page === "Character"}
-                <CharacterPage/>
+                <CharacterPage {username}/>
             {:else if active_page === "Map"}
                 <MapPage/>
             {:else if active_page === "Inbox"}

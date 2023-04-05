@@ -1,16 +1,12 @@
 <script lang="ts">
-    let skills: object = {
-        "Strength" : 0,
-        "Agility" : 0,
-        "Stamina" : 0,
-        "Magic" : 0,
-        "Charisma" : 0,
-        "Vitality" : 0,
-        "Intelligence" : 0,
-        "Perception" : 0,
-        "Animal Handling" : 0
-    }
-    let skillpoints:number = 10;
+    import {get_data} from "../lib/messaging/client/database_connect";
+    export let username:string = "";
+
+    let skills;
+    let skillpoints;
+    get_data(username, "SKILLS").then((res)=>{skills=res; console.log(res)});
+    get_data(username, "SKILL_POINTS").then((res)=>{skillpoints=res; console.log(res)});
+
     let hotbar_slot_count: number = 8;
     let hotbar_slots: object[] = [];
     for (let i = 0; i < hotbar_slot_count; i++) hotbar_slots.push({"component": undefined});
@@ -22,8 +18,10 @@
             } else alert("You have not enough skillpoints left!");
         } else alert("You can't make any of your traits lower than zero!");
     }
+
 </script>
 
+{#if ((skills !== undefined) && (skillpoints !== undefined))}
 <div id = "grid">
     <div id = "imgContainer">
         <div id = "img"></div>
@@ -72,7 +70,7 @@
         </article>
     </div>
 </div>
-
+{/if}
 <style lang="scss">
     @import url("../../src/styles/scrollbar.scss");
     div#grid {

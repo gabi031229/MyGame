@@ -1,4 +1,6 @@
 <script lang="ts">
+    let username:string;
+
     import MainPage from "./main_page.svelte";
     import {messengers} from "../lib/messaging/client/messengers";
     import {Status} from "../lib/messaging/status";
@@ -7,14 +9,12 @@
     let usernameInput;
     let passwordInput;
 
-    let username:string;
-
     function loginTry () {
         // communicate with server here
         messengers.auth.login(usernameInput.value, passwordInput.value)
             .on(Status.OK, () => {
-                loggedIn=true;
                 username=usernameInput.value;
+                loggedIn=true;
             })
             .on(Status.UNAUTHORIZED, () => alert("Invalid entry."))
             .send()
