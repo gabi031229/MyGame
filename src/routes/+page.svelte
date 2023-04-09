@@ -4,7 +4,6 @@
     import MainPage from "./main_page.svelte";
     import {messengers} from "../lib/messaging/client/messengers";
     import {Status} from "../lib/messaging/status";
-
     let loggedIn:boolean = false;
     let usernameInput;
     let passwordInput;

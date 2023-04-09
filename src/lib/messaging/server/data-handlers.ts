@@ -41,7 +41,7 @@ dataHandlers[Message.CHANGE_BY] = (event, formdata) => {
 
     let path: string[] = [data.username, ...data.keys];
     let p: string[] = path.slice(0,-1);
-    let last: string = path.slice(-1);
+    let last: string = path.slice(-1)[0];
     let key: string;
     let data_copy: object = userdata;
     while(p.length > 0) {
