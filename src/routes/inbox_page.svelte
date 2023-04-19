@@ -1,5 +1,9 @@
 <script lang="ts">
-    import * as string_decoder from "string_decoder";
+    import {messengers} from "../lib/messaging/client/messengers";
+    import {Status} from "../lib/messaging/status";
+
+    export let username:string = "";
+    let writing: boolean = false;
 
     let mail:object[] = [
         {
@@ -25,19 +29,38 @@
         }
     ]
 
-    let mailtitle: HTMLElement;
-    let maildate: HTMLElement;
-    let mailsender: HTMLElement;
-    let mailcontent: HTMLElement;
+    let read_mailtitle: HTMLHeadingElement;
+    let read_maildate: HTMLHeadingElement;
+    let read_mailsender: HTMLHeadingElement;
+    let read_mailcontent: HTMLParagraphElement;
+
+    let write_mailtitle: HTMLInputElement;
+    let write_mailrecipient: HTMLInputElement;
+    let write_mailcontent: HTMLTextAreaElement;
     function openMail (data: object) {
         if (!writing) {
-            mailtitle.innerText = data.TOPIC;
-            maildate.innerText = data.DATE;
-            mailsender.innerText = data.SENDER;
-            mailcontent.innerText = data.CONTENT;
+            read_mailtitle.innerText = data.TOPIC;
+            read_maildate.innerText = data.DATE;
+            read_mailsender.innerText = data.SENDER;
+            read_mailcontent.innerText = data.CONTENT;
         }
     }
-    let writing: boolean = false;
+    function sendMail () {
+        console.log("Mail sent");
+        console.log(write_mailtitle.value);
+        console.log(write_mailrecipient.value);
+        console.log(write_mailcontent.value);
+        messengers.mail.send(
+            username,
+            write_mailtitle.value,
+            write_mailrecipient.value,
+            write_mailcontent.value
+        )
+            .on(Status.NOT_FOUND, () => {alert("No user with given name.")})
+            .on(Status.OK, () => {alert("Message sent!")})
+            .send();
+    }
+
 </script>
 
 <div id="grid">
@@ -56,19 +79,21 @@
         <button id = "change_panel" class = "fancybox" on:click={()=>writing=!writing}>
             <h2>{#if writing}Write{:else}Read{/if}</h2>
         </button>
-
-        {#if writing}
-            <div id="writing">
-
-            </div>
-        {:else}
-            <div id="content">
-                <h1 bind:this={mailtitle}></h1>
-                <h2 bind:this={mailsender}></h2>
-                <p bind:this={mailcontent} class="smallred"></p>
-                <h3 bind:this={maildate}></h3>
-            </div>
-        {/if}
+        <div id="content">
+            {#if writing}
+                <input bind:this={write_mailtitle} class="fancybox" type="text" placeholder="Title"/>
+                <input bind:this={write_mailrecipient} class="fancybox" type="text" placeholder="Recipient"/>
+                <textarea bind:this={write_mailcontent} class="fancybox smallred" type="text" placeholder="Write your message here"></textarea>
+                <button on:click={sendMail} class="fancybox">
+                    <h2>Send message</h2>
+                </button>
+            {:else}
+                <h1 bind:this={read_mailtitle}></h1>
+                <h2 bind:this={read_mailsender}></h2>
+                <p bind:this={read_mailcontent} class="smallred"></p>
+                <h3 bind:this={read_maildate}></h3>
+            {/if}
+        </div>
     </div>
 </div>
 
@@ -95,9 +120,27 @@
         position: relative;
         padding: 10px;
         div#content {
-          display: grid;
           width: 70%;
-          overflow: auto;
+          display:grid;
+          justify-content: stretch;
+          grid-template-columns: 100%;
+          input {
+            margin: 10px 0;
+            padding: 5px;
+            font-size: 20px;
+            font-weight: bolder;
+          }
+          textarea {
+            resize: none;
+            margin: 10px 0;
+            padding: 5px;
+            height: 200px;
+          }
+          button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 0;
+          }
         }
       }
       div#letter {

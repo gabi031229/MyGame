@@ -36,7 +36,7 @@
             {:else if active_page === "Map"}
                 <MapPage/>
             {:else if active_page === "Inbox"}
-                <InboxPage/>
+                <InboxPage {username}/>
             {/if}
         </div>
     </main>

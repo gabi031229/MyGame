@@ -3,5 +3,6 @@
 export enum Message {
 	AUTH_LOGIN,
 	GET_DATA,
-	CHANGE_BY
+	CHANGE_BY,
+	MAIL_SEND
 }

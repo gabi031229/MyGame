@@ -4,13 +4,14 @@ import {Status} from "../status";
 import {reform} from "reformdata";
 import fs from "fs";
 
-let path:string = "./userdata.json";
-let userdata: object;
-userdata = JSON.parse(fs.readFileSync(path));
+let path:string = "src/lib/messaging/server/userdata.json";
+let userdata = JSON.parse(fs.readFileSync(path));
 
-function updateData () {fs.writeFile(path, JSON.stringify(userdata, null, 4), (err)=>{
-    if (err) console.log(err);
-});}
+function updateData () {
+    fs.writeFile(path, JSON.stringify(userdata, null, 4),
+        (err)=>{if (err) console.log(err);}
+    );
+}
 
 // you need to create a MessageHandlerCollection
 const dataHandlers: ServerTypes.MessageHandlerCollection = {};
@@ -48,13 +49,15 @@ dataHandlers[Message.CHANGE_BY] = (event, formdata) => {
         key = p.shift();
         data_copy = data_copy[key];
     }
-    data_copy[last] += parseInt(data.amount);
 
+    let amount = parseInt(data.amount);
     //userdata[data.username][data.keys[0]][data.keys[1]] += data.amount;
-    userdata[data.username]["SKILL_POINTS"] -= parseInt(data.amount);
-
-    updateData();
-    return respond(Status.OK);
+    if (userdata[data.username]["SKILL_POINTS"] >= amount || amount < 0) {
+        data_copy[last] += amount;
+        userdata[data.username]["SKILL_POINTS"] -= amount;
+        updateData();
+        return respond(Status.SUCCESS);
+    } else return respond(Status.FAILURE);
 }
 
 export default dataHandlers;

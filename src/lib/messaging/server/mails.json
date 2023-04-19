@@ -1,0 +1,9 @@
+{
+  "000001" : {
+    "SENDER" : "Gab",
+    "RECIPIENT" : "Gab2",
+    "TITLE" : "My First Message",
+    "CONTENT" : "This is the content of the first message.",
+    "DATE" : "2023.04.11 - 12:17"
+  }
+}

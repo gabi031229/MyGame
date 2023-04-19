@@ -22,11 +22,12 @@
 
     function change_skill (name:string, amount:number) {
         messengers.data.change_by(username, ["SKILLS", name], amount)
-            .on(Status.OK, ()=> {get_skills();get_skill_points()})
+            .on(Status.SUCCESS, ()=> {get_skills();get_skill_points();})
+            .on(Status.FAILURE, ()=> {alert("No skillpoints left!");})
             .send();
     }
 
-    let hotbar_slot_count: number = 8;
+    let hotbar_slot_count: number = 20;
     let hotbar_slots: object[] = [];
     for (let i = 0; i < hotbar_slot_count; i++) hotbar_slots.push({"component": undefined});
 
